@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\lawyerController as lawyer;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,4 +19,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get();
+Route::prefix("v1")->controller(lawyer::class)->group(function(){
+    Route::post('/gspc','workerCompensation')->name('gspc');
+});

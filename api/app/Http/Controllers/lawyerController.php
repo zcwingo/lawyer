@@ -11,6 +11,7 @@ class LawyerController extends Controller
         $request->post('a');
         //山东省数据
         $lawyerArea = getLawyerByArea();
+        var_dump($lawyerArea);
         exit;
     }
 }

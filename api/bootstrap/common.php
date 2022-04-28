@@ -20,4 +20,161 @@
 		}
 		return $result;
 	}
+
+	/**
+	 * 工伤赔偿
+	 * $pd  0为受伤，1-10为一至十级伤残，11为死亡
+	 * $money 本月份工资
+	 * $area  所在地区
+	 * $data  其它数据，包括工伤康复费、伙食补助费、交通费、食宿费、护理费等费用
+	 */
+	function WorkerCompensation($pd=0,$money=0,$area=1,$data=[]) {
+		$config = getLawyerByArea(1);
+		$ams = $config['AverageMonthlySalary'];
+		if ($pd==0) {
+			//无伤残、非死亡	
+			$month = sprintf( "%.1f",$data['day']/30);	//住院天数	转换成月
+			$foods = getLawyerByArea(1);	//找出山东伙食补助费 
+			$foods = $foods['foodAllowance'];	//伙食费
+			//保险医疗费计算   (用户自己填加)		
+
+			$result[0]['title'] = '保险医疗费';
+			$result[0]['value'] = $data['ime'];	//用户填加的保险医疗费
+			$result[0]['bark'] = '符合工伤保险诊疗项目目录、药品目录、住院服务标准';
+
+			//工伤康复费   (用户自己填加)
+
+			$result[1]['title'] = '工伤康复费';
+			$result[1]['value'] = $data['iirf'];
+			$result[1]['bark'] = $result['0']['bark'];
+
+			//伙食补助费
+			$result[2]['title'] = '伙食补助费';
+			$result[2]['value'] = $foods['min']*$data['day'].'-'.$foods['max']*$data['day'];
+			$result[2]['bark'] = '统筹地区之外需由医疗机构证明经办机构同意';
+			//交通费、食宿费  (用户自己填加)
+			$result[3]['title'] = '交通费、食宿费';
+			$result[3]['value'] = $data['tep'];
+			$result[3]['bark'] = '实报实缴';
+
+			//工资 停工留薪
+			$result[4]['title'] = '工资';
+			$result[4]['value'] = $money*$month;
+			$result[4]['bark'] = '工资';
+
+			//辅助器具费
+			$result[5]['title'] = '辅助器具费';
+			$result[5]['value'] = $data['aef'];
+			$result[5]['bark'] = '经劳动能力鉴定确认配置';
+
+			//护理费
+			$result[6]['title'] = '护理费';
+			$result[6]['value'] = (100*$data['day']).'-'.(120*$data['day']);
+			$result[6]['bark'] = '';
+		} elseif ($pd>0&&$pd<=10) {
+			//$pd为商残等级，最高为10张
+			if ($pd==1) {
+				//一次性伤残补助
+				$otda = $money*27;
+				//伤残津贴
+				$dbf = $money*0.9; 
+				//生活护理费
+				$lcf = (sprintf( "%.1f",$ams/12)*0.3).'-'.(sprintf( "%.1f",$ams/12)*0.5);
+			} elseif ($pd==2) {
+				//一次性伤残补助
+				$otda = $money*25;
+				//伤残津贴
+				$dbf = $money*0.85;
+				//生活护理费
+				$lcf = (sprintf( "%.1f",$ams/12)*0.3).'-'.(sprintf( "%.1f",$ams/12)*0.5);
+			} elseif ($pd==3) {
+				//一次性伤残补助
+				$otda = $money*23;
+				//伤残津贴
+				$dbf = $money*0.8;
+				//生活护理费
+				$lcf = (sprintf( "%.1f",$ams/12)*0.3).'-'.(sprintf( "%.1f",$ams/12)*0.5);
+			} elseif ($pd==4) {
+				//一次性伤残补助
+				$otda = $money*21;
+				//伤残津贴
+				$dbf = $money*0.75;
+				//生活护理费
+				$lcf = (sprintf( "%.1f",$ams/12)*0.3).'-'.(sprintf( "%.1f",$ams/12)*0.5);
+			} elseif ($pd==5) {
+				//一次性伤残补助
+				$otda = $money*18;
+				//伤残津贴
+				$dbf = $money*0.7;
+				//一次性医疗补助
+				$otms = sprintf( "%.1f",$ams/12)*22;
+				//一次性就业补助
+				$otes = sprintf( "%.1f",$ams/12)*36;
+
+			} elseif ($pd==6) {
+				//一次性伤残补助
+				$otda = $money*16;
+				//伤残津贴
+				$dbf = $money*0.6;
+				//一次性医疗补助
+				$otms = sprintf( "%.1f",$ams/12)*18;
+				//一次性就业补助
+				$otes = sprintf( "%.1f",$ams/12)*30;
+				
+			} elseif ($pd==7) {
+				//一次性伤残补助
+				$otda = $money*13;
+				//一次性医疗补助
+				$otms = sprintf( "%.1f",$ams/12)*13;
+				//一次性就业补助
+				$otes = sprintf( "%.1f",$ams/12)*20;
+				
+			} elseif ($pd==8) {
+				//一次性伤残补助
+				$otda = $money*11;
+				//一次性医疗补助
+				$otms = sprintf( "%.1f",$ams/12)*10;
+				//一次性就业补助
+				$otes = sprintf( "%.1f",$ams/12)*16;
+			} elseif ($pd==9) {
+				//一次性伤残补助
+				$otda = $money*9;
+				//一次性医疗补助
+				$otms = sprintf( "%.1f",$ams/12)*7;
+				//一次性就业补助
+				$otes = sprintf( "%.1f",$ams/12)*12;
+			} elseif ($pd==10) {
+				//一次性伤残补助
+				$otda = $money*7;
+				//一次性医疗补助
+				$otms = sprintf( "%.1f",$ams/12)*4;
+				//一次性就业补助
+				$otes = sprintf( "%.1f",$ams/12)*8;
+			}
+		} elseif ($pd==11) {
+			//工亡			
+			 $sndqgczjmrjkzpsr	= 47412;	//上年度全国城镇居民人均可支配收入
+
+			 //丧葬补助金
+			 $funeralAllowance = sprintf( "%.1f",$ams/12);
+
+			 $result[0]['title'] = '丧葬补助金';
+			 $result[0]['value'] = $funeralAllowance;
+			 $result[0]['bark'] = '';
+
+			 //一次性工亡补助金
+			 $result[1]['title'] = '一次性工亡补助金';
+			 $result[1]['value'] = 47412*20;	//上年度全国城镇居民人均可支配收入47412
+			 $result[1]['bark'] = '';
+
+			 //抚恤金
+			 $result[2]['title'] = '抚恤金';
+			 $result[2]['value'] = '看下方备注说明';
+			 $result[2]['bark'] = '';
+
+
+		}
+
+		return $result;
+	}
 ?>
