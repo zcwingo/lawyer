@@ -10,7 +10,7 @@ class LawyerController extends Controller
     public function workerCompensation(Request $request) {
         $request->post('a');
         //山东省数据
-        $lawyerArea = getLawyerByArea();
+        $lawyerArea = WorkerCompensation();
         var_dump($lawyerArea);
         exit;
     }
