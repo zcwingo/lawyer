@@ -21,4 +21,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::prefix("v1")->controller(lawyer::class)->group(function(){
     Route::post('/gspc','workerCompensation')->name('gspc');
+    Route::post('/ssbqx','legalCostCalculator')->name('ssbqx');
+    Route::post('/lsfjsq','lawyerFeeCalculator')->name('lsfjsq');
 });

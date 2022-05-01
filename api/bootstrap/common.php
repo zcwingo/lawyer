@@ -72,6 +72,7 @@
 			$result[6]['value'] = (100*$data['day']).'-'.(120*$data['day']);
 			$result[6]['bark'] = '';
 		} elseif ($pd>0&&$pd<=10) {
+			$otda = $otms = $otes = $dbf = 0;
 			//$pd为商残等级，最高为10张
 			if ($pd==1) {
 				//一次性伤残补助
@@ -151,6 +152,32 @@
 				//一次性就业补助
 				$otes = sprintf( "%.1f",$ams/12)*8;
 			}
+			if ($otda>0) {
+				$result[0]['title'] = '一次性伤残补助';
+				$result[0]['value'] = $otda;
+				$result[0]['bark'] = '';
+			}
+			if ($otms>0) {
+				$result[1]['title'] = '一次性医疗补助';
+				$result[1]['value'] = $otms;
+				$result[1]['bark'] = '';
+			}
+			if ($otes>0) {
+				$result[2]['title'] = '一次性就业补助';
+				$result[2]['value'] = $otes;
+				$result[2]['bark'] = '';
+			}
+			if ($dbf>0) {
+				$result[3]['title'] = '伤残津贴';
+				$result[3]['value'] = $dbf;
+				$result[3]['bark'] = '';
+			}
+			if ($lcf>0) {
+				$result[3]['title'] = '生活护理费';
+				$result[3]['value'] = $lcf;
+				$result[3]['bark'] = '';
+			}
+
 		} elseif ($pd==11) {
 			//工亡			
 			 $sndqgczjmrjkzpsr	= 47412;	//上年度全国城镇居民人均可支配收入
@@ -171,10 +198,74 @@
 			 $result[2]['title'] = '抚恤金';
 			 $result[2]['value'] = '看下方备注说明';
 			 $result[2]['bark'] = '';
-
-
 		}
 
+		return $result;
+	}
+	/**
+	* 律师费计算器
+	* type:1民事案件 2为刑事案件
+	**/
+	function lawyerFeeCalculator($type=1,$money=0,$city=1) {
+		$coin = getLawyerByArea($city);
+		if ($type==1) {
+			if ($money<=10000) {
+				//涉及财产关系
+				$result['propertyRelations'] = '2500-12000元';
+				//不涉及财产关系
+				$result['noPropertyRelations'] = '2500-3000元';
+			} elseif ($money<=100000&&$money>10000) {
+				$rate[0] = 0.06;
+				$rate[1] = 0.09;
+				//涉及财产关系
+				$ymoney['low'] = ($money-10000)*$rate[0]+$coin['propertyRelations']['low'];
+				$ymoney['height'] = ($money-10000)*$rate[1]+$coin['propertyRelations']['height'];
+				$result['propertyRelations'] = $ymoney['low'].'-'.$ymoney['height'].'元';
+				//不涉及财产关系
+				$nmoney['low'] = ($money-10000)*$rate[0]+$coin['nopropertyRelations']['low'];
+				$nmoney['height'] = ($money-10000)*$rate[1]+$coin['nopropertyRelations']['height'];
+				$result['nopropertyRelations'] = $nmoney['low'].'-'.$nmoney['height'].'元';
+			} elseif ($money<=5000000&&$money>100000) {
+				$rate[0] = 0.05;
+				$rate[1] = 0.06;
+				//涉及财产关系
+				$ymoney['low'] = ($money-10000)*$rate[0]+$coin['propertyRelations']['low'];
+				$ymoney['height'] = ($money-10000)*$rate[1]+$coin['propertyRelations']['height'];
+				$result['propertyRelations'] = $ymoney['low'].'-'.$ymoney['height'].'元';
+				//不涉及财产关系
+				$nmoney['low'] = ($money-10000)*$rate[0]+$coin['nopropertyRelations']['low'];
+				$nmoney['height'] = ($money-10000)*$rate[1]+$coin['nopropertyRelations']['height'];
+				$result['nopropertyRelations'] = $nmoney['low'].'-'.$nmoney['height'].'元';
+			} elseif ($money<=1000000&&$money>500000) {
+				$rate[0] = 0.04;
+				$rate[1] = 0.05;
+				//涉及财产关系
+				$ymoney['low'] = ($money-10000)*$rate[0]+$coin['propertyRelations']['low'];
+				$ymoney['height'] = ($money-10000)*$rate[1]+$coin['propertyRelations']['height'];
+				$result['propertyRelations'] = $ymoney['low'].'-'.$ymoney['height'].'元';
+				//不涉及财产关系
+				$nmoney['low'] = ($money-10000)*$rate[0]+$coin['nopropertyRelations']['low'];
+				$nmoney['height'] = ($money-10000)*$rate[1]+$coin['nopropertyRelations']['height'];
+				$result['nopropertyRelations'] = $nmoney['low'].'-'.$nmoney['height'].'元';
+			} elseif ($money<=1000000&&$money>5000000) {
+				$rate[0] = 0.03;
+				$rate[1] = 0.04;
+				//涉及财产关系
+				$ymoney['low'] = ($money-10000)*$rate[0]+$coin['propertyRelations']['low'];
+				$ymoney['height'] = ($money-10000)*$rate[1]+$coin['propertyRelations']['height'];
+				$result['propertyRelations'] = $ymoney['low'].'-'.$ymoney['height'].'元';
+				//不涉及财产关系
+				$nmoney['low'] = ($money-10000)*$rate[0]+$coin['nopropertyRelations']['low'];
+				$nmoney['height'] = ($money-10000)*$rate[1]+$coin['nopropertyRelations']['height'];
+				$result['nopropertyRelations'] = $nmoney['low'].'-'.$nmoney['height'].'元';
+			} elseif ($money>=5000000) {
+				$result['propertyRelations'] = '500万元以上部分由律师事务所和委托人协商确定';
+				$result['nopropertyRelations'] = '';
+			}
+		} else {
+			$result['propertyRelations'] = $coin['criminal'];
+			$result['nopropertyRelations'] = '';
+		}
 		return $result;
 	}
 ?>
