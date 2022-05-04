@@ -20,7 +20,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix("v1")->controller(lawyer::class)->group(function(){
+    //工作赔偿费
     Route::post('/gspc','workerCompensation')->name('gspc');
+    //诉讼保全险
     Route::post('/ssbqx','legalCostCalculator')->name('ssbqx');
+    //律师费计算器
     Route::post('/lsfjsq','lawyerFeeCalculator')->name('lsfjsq');
 });
