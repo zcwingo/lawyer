@@ -207,6 +207,8 @@
 	* type:1民事案件 2为刑事案件
 	**/
 	function lawyerFeeCalculator($type=1,$money=0,$city=1) {
+		$result['propertyRelations'] = '';
+		$result['noPropertyRelations'] = '';
 		$coin = getLawyerByArea($city);
 		if ($type==1) {
 			if ($money<=10000) {
@@ -222,9 +224,9 @@
 				$ymoney['height'] = ($money-10000)*$rate[1]+$coin['propertyRelations']['height'];
 				$result['propertyRelations'] = $ymoney['low'].'-'.$ymoney['height'].'元';
 				//不涉及财产关系
-				$nmoney['low'] = ($money-10000)*$rate[0]+$coin['nopropertyRelations']['low'];
-				$nmoney['height'] = ($money-10000)*$rate[1]+$coin['nopropertyRelations']['height'];
-				$result['nopropertyRelations'] = $nmoney['low'].'-'.$nmoney['height'].'元';
+				$nmoney['low'] = ($money-10000)*$rate[0]+$coin['noPropertyRelations']['low'];
+				$nmoney['height'] = ($money-10000)*$rate[1]+$coin['noPropertyRelations']['height'];
+				$result['noPropertyRelations'] = $nmoney['low'].'-'.$nmoney['height'].'元';
 			} elseif ($money<=5000000&&$money>100000) {
 				$rate[0] = 0.05;
 				$rate[1] = 0.06;
@@ -233,9 +235,9 @@
 				$ymoney['height'] = ($money-10000)*$rate[1]+$coin['propertyRelations']['height'];
 				$result['propertyRelations'] = $ymoney['low'].'-'.$ymoney['height'].'元';
 				//不涉及财产关系
-				$nmoney['low'] = ($money-10000)*$rate[0]+$coin['nopropertyRelations']['low'];
-				$nmoney['height'] = ($money-10000)*$rate[1]+$coin['nopropertyRelations']['height'];
-				$result['nopropertyRelations'] = $nmoney['low'].'-'.$nmoney['height'].'元';
+				$nmoney['low'] = ($money-10000)*$rate[0]+$coin['noPropertyRelations']['low'];
+				$nmoney['height'] = ($money-10000)*$rate[1]+$coin['noPropertyRelations']['height'];
+				$result['noPropertyRelations'] = $nmoney['low'].'-'.$nmoney['height'].'元';
 			} elseif ($money<=1000000&&$money>500000) {
 				$rate[0] = 0.04;
 				$rate[1] = 0.05;
@@ -255,17 +257,32 @@
 				$ymoney['height'] = ($money-10000)*$rate[1]+$coin['propertyRelations']['height'];
 				$result['propertyRelations'] = $ymoney['low'].'-'.$ymoney['height'].'元';
 				//不涉及财产关系
-				$nmoney['low'] = ($money-10000)*$rate[0]+$coin['nopropertyRelations']['low'];
-				$nmoney['height'] = ($money-10000)*$rate[1]+$coin['nopropertyRelations']['height'];
-				$result['nopropertyRelations'] = $nmoney['low'].'-'.$nmoney['height'].'元';
+				$nmoney['low'] = ($money-10000)*$rate[0]+$coin['noPropertyRelations']['low'];
+				$nmoney['height'] = ($money-10000)*$rate[1]+$coin['noPropertyRelations']['height'];
+				$result['noPropertyRelations'] = $nmoney['low'].'-'.$nmoney['height'].'元';
 			} elseif ($money>=5000000) {
 				$result['propertyRelations'] = '500万元以上部分由律师事务所和委托人协商确定';
-				$result['nopropertyRelations'] = '';
+				$result['noPropertyRelations'] = '';
 			}
 		} else {
 			$result['propertyRelations'] = $coin['criminal'];
-			$result['nopropertyRelations'] = '';
+			$result['noPropertyRelations'] = '';
 		}
 		return $result;
+	}
+
+	/**
+	* 诉讼保全险
+	* 各个保险公司标准不一，此页加入保险公司经济人
+	**/
+	
+	function litigationAllRisksInsurance($money=0){
+		$moneyArr['big'] =2000;
+		$moneyArr['small'] = 500;
+		if ($money>0) {
+			$moneyArr['big'] = $money*0.03;
+			$moneyArr['small'] = $money*0.02;
+		}
+		return $moneyArr;
 	}
 ?>

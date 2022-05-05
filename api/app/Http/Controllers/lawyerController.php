@@ -19,12 +19,7 @@ class LawyerController extends Controller
     //诉讼费计算器
     public function legalCostCalculator(Request $request) {
         $money = $request->post('money');
-        $moneyArr['big'] =2000;
-		$moneyArr['small'] = 500;
-		if ($money>0) {
-			$moneyArr['big'] = $money*0.03;
-			$moneyArr['small'] = $money*0.02;
-		}
+        $moneyArr = litigationAllRisksInsurance($money);
 		return response()->json($moneyArr);
     }
 
