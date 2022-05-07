@@ -26,4 +26,6 @@ Route::prefix("v1")->controller(lawyer::class)->group(function(){
     Route::post('/ssbqx','legalCostCalculator')->name('ssbqx');
     //律师费计算器
     Route::post('/lsfjsq','lawyerFeeCalculator')->name('lsfjsq');
+    //仲裁案件计算器
+    Route::post('/zcajjsq','arbitration')->name('zcajjsq');
 });

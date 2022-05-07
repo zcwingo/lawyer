@@ -16,6 +16,9 @@ return new class extends Migration
         Schema::create('slideshows', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->string('title')->comment('幻灯片名称');
+            $table->tinyInteger('type')->comment('位置显示');
+            $table->string('url')->comment('url地址');            
         });
     }
 

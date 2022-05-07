@@ -31,4 +31,10 @@ class LawyerController extends Controller
         $lawyerMoney = lawyerFeeCalculator($type,$money,1);
         return response()->json($lawyerMoney);
     }
+    //仲裁案件受理费
+    public function arbitration(Request $request) {
+        $money = $request->post('money');
+        $lawyerMoney = arbitration($money);
+        return $lawyerMoney;
+    }
 }
