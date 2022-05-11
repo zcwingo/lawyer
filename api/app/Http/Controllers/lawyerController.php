@@ -37,4 +37,16 @@ class LawyerController extends Controller
         $lawyerMoney = arbitration($money);
         return $lawyerMoney;
     }
+
+    //房贷计算器
+    public function mortgage(Request $request) {
+        //贷款月数
+        $dkm = $request->post('dkys');
+        //贷款总额 
+        $dkTotal = $request->post('dkze');
+        //贷款年利率
+        $dknl = $request->post('dknll');
+        $mortgage = debx($dkm,$dkTotal,$dknl);
+        return response()->json($mortgage);
+    }
 }

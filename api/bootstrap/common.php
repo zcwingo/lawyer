@@ -313,4 +313,33 @@
 		}
 		return $money.'元';
 	}
+
+	function debx($dkm=240,$dkTotal=0,$dknl=0.0515) 
+    { 
+		$emTotal = $dkTotal * $dknl / 12 * pow(1 + $dknl / 12, $dkm) / (pow(1 + $dknl / 12, $dkm) - 1); //每月还款金额 
+
+		$lxTotal = 0; //总利息 
+		
+		$result = [];
+
+		for ($i = 0; $i < $dkm; $i++) { 
+
+			$lx   = $dkTotal * $dknl / 12;  //每月还款利息 
+
+			$em   = $emTotal - $lx; //每月还款本金 
+
+			$result[$i] = "第". ($i + 1) ."期,". "本金:" . sprintf("%.2f",$em) .",利息:". sprintf("%.2f",$lx) .",总额:". sprintf("%.2f",$emTotal); 
+
+			$dkTotal = $dkTotal - $em; 
+
+			$lxTotal = $lxTotal + $lx; 
+			
+		} 
+		
+		$result['count'] = "总利息:" . sprintf("%.2f",$lxTotal); 
+		return $result;
+
+   } 
+
+
 ?>
