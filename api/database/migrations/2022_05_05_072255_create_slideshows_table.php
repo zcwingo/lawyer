@@ -18,7 +18,8 @@ return new class extends Migration
             $table->timestamps();
             $table->string('title')->comment('幻灯片名称');
             $table->tinyInteger('type')->comment('位置显示');
-            $table->string('url')->comment('url地址');            
+            $table->string('url')->comment('url地址'); 
+            $table->string('images')->comment('图片地址');
         });
     }
 
