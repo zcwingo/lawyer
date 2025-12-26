@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\lawyerController as lawyer;
 use App\Http\Controllers\SlideshowController as slide;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +19,16 @@ use App\Http\Controllers\SlideshowController as slide;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+//用户认证接口
+Route::prefix("v1")->controller(AuthController::class)->group(function(){
+    //用户注册
+    Route::post('/register','register')->name('register');
+    //用户登录
+    Route::post('/login','login')->name('login');
+    //用户登出（需要认证）
+    Route::middleware('auth:sanctum')->post('/logout','logout')->name('logout');
 });
 
 //律师工具接口
